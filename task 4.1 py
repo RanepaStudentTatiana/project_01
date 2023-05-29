@@ -1,0 +1,75 @@
+# Задача 4.1.
+# Домашнее задание на SQL
+
+# В базе данных teacher создайте таблицу Students
+
+# Структура таблицы: Student_Id - Integer, Student_Name - Text, School_Id - Integer (Primary key)
+
+# Наполните таблицу следующими данными:
+
+# 201, Иван, 1
+# 202, Петр, 2
+# 203, Анастасия, 3
+# 204, Игорь, 4
+
+# Напишите программу, с помощью которой по ID студента можно получать информацию о школе и студенте.
+
+# Формат вывода:
+
+# ID Студента:
+# Имя студента:
+# ID школы:
+# Название школы:
+import sqlite3
+
+connection = sqlite3.connect('Teatchers.db')
+cursor = connection.cursor()
+sqlquery = """CREATE TABLE Students(
+School_Id INTEGER NOT NULL PRIMARY KEY,
+Students_Name TEXT NOT NULL,
+Students_Id INTEGER NOT NULL
+);"""
+cursor.execute(sqlquery)
+connection.commit()
+connection.close()
+
+import sqlite3
+
+connection = sqlite3.connect('Teatchers.db')
+cursor = connection.cursor()
+sqlquery = """INSERT INTO Students (School_Id, Students_Name, Students_Id)
+VALUES
+('1', 'Иван', 201),
+('2', 'Петр', 202),
+('3', 'Анастасия', 203),
+('4', 'Игорь', 204);"""
+cursor.execute(sqlquery)
+connection.commit()
+connection.close()
+
+import sqlite3
+def get_connection():
+  connection = sqlite3.connect('Teatchers.db')
+  return connection
+def close_connection(connection):
+  if connection:
+    connection.close()
+def  get_student_detail(student_id):
+  try:
+    connection = get_connection()
+    cursor = connection.cursor()
+    select_query = "SELECT * FROM Students WHERE Students_Id = ? "
+    cursor.execute(select_query, (student_id,))
+    records = cursor.fetchall()
+    close_connection(connection)
+    print("Данные по школе")
+    for row in records:
+      print("ID школы", row[0])
+      print("Имя студента", row[1])
+      print("ID студента", row[2])
+  except(Exception, sqlite3.Error) as error:
+    print("Ошибка в получении данных: ", error)
+
+x = int(input("Введи ID:"))
+get_student_detail(x)
+
